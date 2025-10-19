@@ -1,0 +1,33 @@
+     1                                  ; build:    nasm -f elf64 task1.asm -o task1.o
+     2                                  ; linking:  ld -o task1 task1.o
+     3                                  ; listing:  nasm -f elf64 task1.asm -o task1.o -l task1.lst
+     4                                  ; tracing:  strace ./task1 > strace_output.txt
+     5                                  ; launch:   ./task1
+     6                                  
+     7                                  global _start                      ; делаем метку _start видимой извне
+     8                                  
+     9                                  section .data                      ; секция данных
+    10 00000000 48656C6C6F20776F72-         message db  "Hello world!", 10  ; строка для вывода на консоль
+    10 00000009 6C64210A           
+    11                                      length  equ $ - message
+    12                                  
+    13                                  section .text                      ; объявление секции кода
+    14                                  _start:                            ; точка входа в программу
+    15 00000000 B801000000                  mov rax, 1                     ; 1 - номер системного вызова функции write
+    16 00000005 BF01000000                  mov rdi, 1                     ; 1 - дескриптор файла стандартного вызова stdout
+    17 0000000A 48BE-                       mov rsi, message               ; адрес строки для вывод
+    17 0000000C [0000000000000000] 
+    18 00000014 BA0D000000                  mov rdx, length                ; количество байтов
+    19 00000019 0F05                        syscall                        ; выполняем системный вызов write
+    20                                  
+    21 0000001B 4883F80D                    cmp rax, length                ; сравниваем возвращаемое значение с length
+    22 0000001F 7507                        jne is_failure_brunch
+    23 00000021 BF00000000                  mov rdi, 0                     ; если всё нормально, то rdi = 0 (EXIT_SUCCESS в Си)
+    24 00000026 EB05                        jmp next
+    25                                  
+    26                                  is_failure_brunch:
+    27 00000028 BF01000000                  mov rdi, 1                    ; если системный вызов завершился неудачно, то rdi = 1 (EXIT_FAILURE в Си)
+    28                                  
+    29                                  next:
+    30 0000002D B83C000000                  mov rax, 60                    ; 60 - номер системного вызова exit
+    31 00000032 0F05                        syscall                        ; выполняем системный вызов exit
