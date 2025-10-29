@@ -1,0 +1,7 @@
+execve("./task3", ["./task3"], 0x7ffe62652110 /* 45 vars */) = 0
+write(1, "Enter your string: ", 19)     = 19
+read(0, "HELLO\n", 64)                  = 6
+write(1, "Reversed: ", 10)              = 10
+write(1, "OLLEH\n", 6)                  = 6
+exit(0)                                 = ?
++++ exited with 0 +++
